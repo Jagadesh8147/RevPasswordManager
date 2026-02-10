@@ -15,7 +15,8 @@ RevPassword Manager is a secure, console-based password management application b
 ---
 
 ## 🏗️ Architecture Diagram
-![Architecture Diagram](Architectural Diagram.jpeg)
+![Architecture Diagram](./Architectural_Diagram.jpeg)
+
 
 ### ✔️ Presentation Layer
 
@@ -61,7 +62,8 @@ Tables:
 ---
 
 ## 🗃️ ER Diagram
-![ER Diagram](ER Diagram.jpeg)
+![ER Diagram](./ER_Diagram.jpeg)
+
 
 ### ✔️ Entities
 
@@ -186,6 +188,11 @@ RevPasswordManager/
 5. Application starts in Console UI
 
 ---
+
+## GitHub Description
+RevPassword Manager is a secure Java-based password management system using MySQL and JDBC. 
+It supports AES encryption, security questions, verification codes, and follows a clean multi-layer architecture. 
+Perfect for showcasing backend development, JDBC, SQL design, and modular Java practices.
 
 ## 🚀 Future Enhancements
 

@@ -1,192 +1,201 @@
 # 🔐 RevPasswordManager – Secure Password Management System
 
-RevPasswordManager is a **console-based password management application** built using **Java, JDBC, and MySQL**.  
-It allows users to securely store, retrieve, and manage their passwords with features like encryption, OTP verification, and security questions.
+
+## 📌 Overview
+
+RevPassword Manager is a secure, console-based password management application built using **Java**, **MySQL**, and **JDBC**. The system allows users to:
+
+* Register & Login
+* Store multiple account passwords
+* Encrypt passwords using AES
+* Set and verify security questions
+* Reset forgotten passwords using verification codes
+* Follow a clean multi‑layered architecture (Service, DAO, Utility)
 
 ---
 
-## 📘 Features
+## 🏗️ Architecture Diagram
 
-### 👤 User Management
-- Register with name, email, and master password  
-- Login with email and master password  
-- Forgot Password recovery:
-  - Security question  
-  - OTP verification (5-minute expiry)  
-- Update profile (name, email)
+![Architecture Diagram](Architectural Diagram.jpeg)
+
+### ✔️ Presentation Layer
+
+* `MainApp.java` → Handles user interaction and console UI
+
+### ✔️ Service Layer (`com.revature.service`)
+
+Contains all business logic:
+
+* `UserService`
+* `PasswordService`
+* `SecurityService`
+* `VerificationCodeService`
+
+### ✔️ DAO Layer (`com.revature.dao`)
+
+Handles all database CRUD operations:
+
+* `UserDAO`
+* `PasswordDAO`
+* `SecurityQuestionDAO`
+* `VerificationCodeDAO`
+
+### ✔️ Utility Layer (`com.revature.util`)
+
+Helper classes:
+
+* `DBConnectionUtil`
+* `AESUtil / PasswordUtil`
+* `EmailValidatorUtil`
+* `PasswordValidatorUtil`
+
+### ✔️ Database Layer (MySQL)
+
+Tables:
+
+* `users`
+* `passwords`
+* `security_questions`
+* `user_security_answers`
+* `verification_codes`
 
 ---
 
-### 🔒 Password Vault Features
-- Add new account passwords  
-- View all saved accounts  
-- View a single password (requires master password re-entry)  
-- Update stored passwords  
-- Delete account passwords  
-- Search passwords by account name  
+## 🗃️ ER Diagram
+![ER Diagram](ER Diagram.jpeg)
+
+### ✔️ Entities
+
+* Users
+* Passwords
+* Security Questions
+* User Security Answers
+* Verification Codes
+
+### ✔️ Relationships
+
+* A user **has many** saved passwords
+* A user **sets** security questions
+* A question **has many** answers
+* A user receives **verification codes** for password reset
 
 ---
 
-### 🛡 Security Features
-- Strong master password validation  
-- Password encryption for safe storage  
-- Security question for account recovery  
-- OTP (One-Time Password) for sensitive operations  
-- OTP marked as used after verification  
-
----
-
-### ⚙️ Additional Features
-- Strong password generator:
-  - Custom length  
-  - Uppercase / numbers / special characters options  
-
----
-
-## 🏗 ER Diagram
+## 📂 Project Structure
 
 ```
-Users (user_id PK)
-        |
-        | 1-to-1
-        |
-Security_Questions (user_id FK)
-
-Users (user_id PK)
-        |
-        | 1-to-many
-        |
-Password_Entries (entry_id PK)
-
-Users (user_id PK)
-        |
-        | 1-to-many
-        |
-Verification_Codes (code_id PK)
+RevPasswordManager/
+│
+├── com.revature.main
+│     └── MainApp.java
+│
+├── com.revature.service
+│     ├── UserService.java
+│     ├── PasswordService.java
+│     ├── SecurityService.java
+│     └── VerificationCodeService.java
+│
+├── com.revature.dao
+│     ├── UserDAO.java
+│     ├── PasswordDAO.java
+│     ├── SecurityQuestionDAO.java
+│     └── VerificationCodeDAO.java
+│
+├── com.revature.model
+│     ├── User.java
+│     ├── PasswordEntry.java
+│     ├── SecurityQuestion.java
+│     ├── UserSecurityAnswer.java
+│     └── VerificationCode.java
+│
+├── com.revature.util
+│     ├── DBConnectionUtil.java
+│     ├── AESUtil.java
+│     ├── EmailValidatorUtil.java
+│     └── PasswordValidatorUtil.java
+│
+└── resources/
+      └── database.sql
 ```
 
 ---
 
-## 🗂 Project Architecture
+## 💾 Database Tables
 
-The project follows a **Layered Architecture**:
+### ✔️ `users`
 
-```
-Main Layer (UI Layer)
-Service Layer (Business Logic)
-DAO Layer (Database Access)
-Model Layer (Data Classes)
-Utility Layer (DB Connection & Helpers)
-```
+| Column   | Type     |
+| -------- | -------- |
+| user_id  | INT (PK) |
+| name     | VARCHAR  |
+| email    | VARCHAR  |
+| password | VARCHAR  |
 
-### Layer Breakdown
+### ✔️ `passwords`
 
-#### 1️⃣ Main Layer
-**Package:** `com.RevPasswordManager.Main`  
-- Handles user input  
-- Displays menus  
-- Calls service methods  
+| Column       | Type                    |
+| ------------ | ----------------------- |
+| step_id      | INT (PK)                |
+| user_id      | INT (FK)                |
+| account_name | VARCHAR                 |
+| username     | VARCHAR                 |
+| password     | VARCHAR (AES encrypted) |
 
-#### 2️⃣ Service Layer
-**Package:** `com.RevPasswordManager.Service`  
-- Business logic  
-- All validations  
-- Coordinates DAO and Main  
+### ✔️ `security_questions`
 
-#### 3️⃣ DAO Layer
-**Package:** `com.RevPasswordManager.DAO`  
-- JDBC operations  
-- CRUD queries  
-- Interacts with MySQL database  
+| Column        | Type     |
+| ------------- | -------- |
+| question_id   | INT (PK) |
+| question_text | VARCHAR  |
 
-#### 4️⃣ Model Layer
-**Package:** `com.RevPasswordManager.Model`  
-- POJOs for User, PasswordEntry  
-- Represents database rows  
+### ✔️ `user_security_answers`
 
-#### 5️⃣ Utility Layer
-**Package:** `com.RevPasswordManager.Util`  
-- DBConnection  
-- PasswordValidatorUtil  
-- Other helpers  
+| Column      | Type     |
+| ----------- | -------- |
+| answer_id   | INT (PK) |
+| user_id     | INT (FK) |
+| question_id | INT (FK) |
+| answer_text | VARCHAR  |
+
+### ✔️ `verification_codes`
+
+| Column      | Type     |
+| ----------- | -------- |
+| code_id     | INT (PK) |
+| user_id     | INT (FK) |
+| code        | VARCHAR  |
+| expiry_time | DATETIME |
 
 ---
 
-## 🛢 Database Structure
+## 🔐 Security Features
 
-### Users Table
-- user_id (PK)  
-- name  
-- email  
-- password  
-
-### Security_Questions Table
-- user_id (FK)  
-- question_id  
-- answer  
-
-### Verification_Codes Table
-- code_id (PK)  
-- user_id (FK)  
-- code  
-- expiry_time  
-- is_used  
-
-### Password_Entries Table
-- entry_id (PK)  
-- user_id (FK)  
-- account_name  
-- username  
-- encrypted_password  
+* AES encryption for passwords
+* Input validation (email + password format)
+* Security question verification
+* Verification codes for password reset
+* Safe JDBC queries (Prepared Statements)
 
 ---
 
 ## ▶️ How to Run
 
-### 1️⃣ Import into Eclipse
-- File → Import → Existing Java Project → Select project folder
-
-### 2️⃣ Configure Database
-- Create a MySQL database  
-- Run the `RevPasswordManagerDB.sql` file  
-- Update DBConnection.java:
-
-```java
-String url = "jdbc:mysql://localhost:3306/YOUR_DB_NAME";
-String username = "root";
-String password = "your_mysql_password";
-```
-
-### 3️⃣ Run Application
-- Open `MainApplication.java`
-- Right-click → Run As → Java Application
+1. Import project into **Eclipse / IntelliJ**
+2. Update MySQL credentials in `DBConnectionUtil.java`
+3. Execute `database.sql` to create tables
+4. Run `MainApp.java`
+5. Application starts in Console UI
 
 ---
 
-## 🔐 Forgot Password Workflow
+## 🚀 Future Enhancements
 
-1. Enter registered email  
-2. Answer security question  
-3. Receive OTP (printed in console)  
-4. Enter OTP  
-5. Reset master password  
-
----
-
-## 🧑‍💻 Developer
-
-**Jagadesh Sai**  
-Java Developer | JDBC | MySQL | Console Applications
+* JavaFX GUI
+* Password strength analyzer
+* MFA (Multi-factor authentication)
+* Cloud sync
 
 ---
 
-## ⭐ Future Enhancements
-- GUI (JavaFX / Swing) version  
-- Multi-factor authentication  
-- Export/Import vault  
-- Cloud sync  
 
----
 
-## 📜 License
-This project is for learning and educational purposes only.

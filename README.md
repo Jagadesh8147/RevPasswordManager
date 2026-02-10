@@ -15,7 +15,6 @@ RevPassword Manager is a secure, console-based password management application b
 ---
 
 ## 🏗️ Architecture Diagram
-
 ![Architecture Diagram](Architectural Diagram.jpeg)
 
 ### ✔️ Presentation Layer
